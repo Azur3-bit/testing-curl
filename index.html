@@ -1,274 +1,776 @@
 <html lang="en">
 
 <body>
-    # Write an embedded C program to interface LED and push button with Arduino Uno
-    const int buttonPin = 4;  // Pin connected to pushbutton
-const int ledPin = 12;  // Pin connected to LED  
-int buttonState; // Give pushbutton a value
-void setup()
+    CN EXPERIMENT 
+
+#1 -------------------------------------------------------------------------------------------------
+
+AIM : Study of necessary header files with respect of socket programming
+
+Socket header files contain data definitions, structures, constants, macros, and options used
+by socket subroutines.
+An application program must include the appropriate header file to make use of structures or
+other information a particular socket subroutine requires. Commonly used socket header files
+are:
+
+Item Description
+/usr/include/netinet/in.h Defines Internet constants and structures.
+/usr/include/arpa/nameser.h Contains Internet name server information.
+/usr/include/netdb.h Contains data definitions for socket subroutines.
+/usr/include/resolv.h Contains resolver global definitions and variables.
+/usr/include/sys/socket.h Contains data definitions and socket structures.
+/usr/include/sys/socketvar.h Defines the kernel structure per socket and contains buffer
+
+queues.
+
+/usr/include/sys/types.h Contains data type definitions.
+/usr/include/sys/un.h Defines structures for the UNIX interprocess communication
+
+domain.
+
+/usr/include/sys/ndd_var.h Defines structures for the operating system Network Device
+
+Driver (NDD) domain.
+
+/usr/include/sys/atmsock.h
+
+Contains constants and structures for the Asynchronous
+Transfer Mode (ATM) protocol in the operating system NDD
+domain.
+
+#2 -------------------------------------------------------------------------------------------------
+
+Aim: Study of necessary header files with respect to socket programming and of Basic
+Functions of Socket Programming.
+
+The primary socket API functions and methods in this module are:
+socket()
+.bind()
+.listen()
+.accept()
+.connect()
+.connect_ex()
+.send()
+.recv()
+.close()
+ ** SERVER CLIENT DIAGRAM **
+The basic socket system has the following calls:
+Create a socket: socket ()
+
+Bind local port: BIND ()
+Establish a connection: connect (), accept ()
+Listening port: Listen ()
+Data transmission: Send (), Recv ()
+Input/Output multiplexing: Select ()
+Disable socket only: closesocket ()
+Three Data Types
+Struct sockaddr
 {
-pinMode(ledPin, OUTPUT);  // Set LED pin as output
-pinMode(buttonPin, INPUT); // Set pushbutton pin as input
- }
-void loop() { buttonState = digitalRead(buttonPin); // Read input from pin 4
-if(buttonState == LOW) { // If pushbutton is pressed, set as low
- digitalWrite(ledPin, HIGH); // Turn on LED
+Unsigned short sa_family; // address family, generally af_inet
+Char sa_data [14]; // 14-byte Protocol address
+}
+Struct sockaddr_in
+{
+Short int sin_family; // address family
+Unsigned short int sin_port; // port number
+Struct in_addr; // ip address
+Unsigned char sin_zero [8]; // fill
+}
+Four common functions
+1 socket ()
+Header file:
+# Include &lt;sys/types. h&gt;
+# Include &lt;sys/socket. h&gt;
+Function prototype:
+Int socket (INT domain, int type, int Protocol)
+Domain: protocol type, generally af_inet
+Type: Socket Type
+Protocol: used to specify the number of the transport protocol used by the socket. It is usually
+set to 0.
+2 BIND ()
+Header file:
+# Include &lt;sys/types. h&gt;
+# Include &lt;sys/socket. h&gt;
+Function prototype:
+Int BIND (INT sockfd, struct sockaddr * my_addr, int addrlen)
+Sockfd: Socket Descriptor
+My_addr: A sockaddr pointer pointing to information including the local IP address and port
+number.
+Addrlen: usually set to sizeof (struct sockaddr)
+3 connect ()
+Header file:
+# Include &lt;sys/types. h&gt;
+# Include &lt;sys/socket. h&gt;
+Function prototype:
+
+Int connect (INT sockfd, struct sockaddr * serv_addr, int addrlen)
+Sockfd: Socket descriptor of the target server
+Serv_addr: pointer containing the IP address and port number of the target machine
+Addrlen: sizeof (struct sockaddr)
+4 listen ()
+Header file:
+# Include &lt;sys/socket. h&gt;
+Function prototype:
+Int listen (INT sockfd, int backlog );
+Sockfd: Socket descriptor returned by the socket () system call
+Backlog: specify the maximum number of requests in the Request queue. incoming
+connection requests will wait for accept () in the queue.
+5 accept ()
+Header file:
+# Include &lt;sys/types. h&gt;
+# Inlcude &lt;sys/socket. h&gt;
+Function prototype:
+Int accept (INT sockfd, void * ADDR, int addrlen)
+Sockfd: indicates the socket descriptor to be monitored.
+ADDR: Usually a pointer to the sockaddr_in variable, which is used to store the information
+of the host requesting the Connection Service.
+Addrlen: sizeof (struct sockaddr_in)
+6 send ()
+Header file:
+# Include &lt;sys/socket. h&gt;
+Function prototype:
+Int send (INT sockfd, const void * MSG, int Len, int flags );
+Sockfd: Socket descriptor used to transmit data
+MSG: pointer to send data
+Flags: 0
+7 Recv ()
+Header file:
+# Include &lt;sys/types. h&gt;
+# Include &lt;sys/socket. h&gt;
+Function prototype:
+Int Recv (INT sockfd, void * Buf, int Len, unsigned int flags)
+Sockfd: Socket descriptor for receiving data
+Buf: buffer for storing data
+Len: Buffer Length
+Flags: 0
+8 sendto ()
+Header file:
+# Include &lt;sys/types. h&gt;
+# Include &lt;sys/socket. h&gt;
+Function prototype:
+
+Int sendto (INT sockfd, const void * MSG, int Len, unsigned int flags, const struct sockaddr *
+To, int tolen );
+
+9 recvfrom ()
+Header file:
+# Include &lt;sys/types. h&gt;
+# Include &lt;sys/socket. h&gt;
+Function prototype:
+Int recvfrom (INT sockfd, void * Buf, int Len, unsigned int flags, struct sockaddr * From, int
+fromlen)
+
+10 read () write ()
+Int read (int fd, char * Buf, int Len)
+Int write (int fd, char * Buf, int Len)
+11 Shutdown ()
+Close (sockfd)
+Int Shutdown (INT sockfd, int how)
+
+RESULT: Various Functions related to socket programming were studied. Those are
+the part of Socket IO and Basic Functions of Socket Programming.
+
+
+
+#-------------------------------------------------------------------------------------------------
+
+AIM : Simple TCP/IP Client Server Communication
+
+
+Server
+import socket
  
+# Set up a TCP/IP server
+tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+ 
+# Bind the socket to server address and port 81
+server_address = (&#39;localhost&#39;, 81)
+tcp_socket.bind(server_address)
+ 
+# Listen on port 81
+tcp_socket.listen(1)
+ 
+while True:
+    print(&quot;Waiting for connection&quot;)
+    connection, client = tcp_socket.accept()
+ 
+    try:
+        print(&quot;Connected to client IP: {}&quot;.format(client))
+         
+        # Receive and print data 32 bytes at a time, as long as the client is sending something
+        while True:
+            data = connection.recv(32)
+            print(&quot;Received data: {}&quot;.format(data))
+ 
+            if not data:
+                break
+ 
+    finally:
+        connection.close()
 
-delay(500);
- digitalWrite(ledPin, LOW);
- delay(500);
-}
-else
-{
-  digitalWrite(ledPin, LOW); // Otherwise, turn off LED
-   }
-   }
+Client
+
+import socket
+ 
+# Create a connection to the server application on port 81
+tcp_socket = socket.create_connection((&#39;localhost&#39;, 81))
+ 
+try:
+    data = str.encode(‘Hi. I am a TCP client sending data to the server’)
+    tcp_socket.sendall(data)
+ 
+finally:
+    print(&quot;Closing socket&quot;)
+    tcp_socket.close()
 
 
-    #-----------------------------------------------------
-     # Write an embedded C program for Seven Segment Display interfacing with Arduino
+#-------------------------------------------------------------------------------------------------
 
-    int a=13;
-int b=12;
-int c=11;
-int d=10;
-int e=9;
-int f=8;
-int g=7;
-void setup() {
-  // put your setup code here, to run once:
-pinMode (a, OUTPUT);
-pinMode (b, OUTPUT);
-pinMode (c, OUTPUT);
-pinMode (d, OUTPUT);
-pinMode (e, OUTPUT);
-pinMode (f, OUTPUT);
-pinMode (g, OUTPUT);
-}
-void loop() {
+AIM : UDP ECHO CLIENT SERVER
 
-  // put your main code here, to run repeatedly:
-digitalWrite (a,0);
-digitalWrite (b,0);
-digitalWrite (c,0);
-digitalWrite (d,0);
-digitalWrite (e,0);
-digitalWrite (f,0);
-digitalWrite (g,1);
-delay (500);
-digitalWrite (a,1);
-digitalWrite (b,0);
-digitalWrite (c,0);
-digitalWrite (d,1);
-digitalWrite (e,1);
-digitalWrite (f,1);
-digitalWrite (g,1);
-delay (500);
-digitalWrite (a,0);
-digitalWrite (b,0);
-digitalWrite (c,1);
-digitalWrite (d,0);
-digitalWrite (e,0);
-digitalWrite (f,1);
-digitalWrite (g,0);
-delay (500);
-digitalWrite (a,0);
-digitalWrite (b,0);
-digitalWrite (c,0);
-digitalWrite (d,0);
-digitalWrite (e,1);
-digitalWrite (f,1);
-digitalWrite (g,0);
-delay (500);
-digitalWrite (a,1);
-digitalWrite (b,0);
-digitalWrite (c,0);
-digitalWrite (d,1);
-digitalWrite (e,1);
-digitalWrite (f,0);
-digitalWrite (g,0);
-delay (500);
+UDP Echo Client Server Communication
 
-digitalWrite (a,0);
-digitalWrite (b,1);
-digitalWrite (c,0);
-digitalWrite (d,0);
-digitalWrite (e,1);
-digitalWrite (f,0);
-digitalWrite (g,0);
-delay (500);
-digitalWrite (a,0);
-digitalWrite (b,1);
-digitalWrite (c,0);
-digitalWrite (d,0);
-digitalWrite (e,0);
-digitalWrite (f,0);
-digitalWrite (g,0);
-delay (500);
-digitalWrite (a,0);
-digitalWrite (b,0);
-digitalWrite (c,0);
-digitalWrite (d,1);
-digitalWrite (e,1);
-digitalWrite (f,1);
-digitalWrite (g,1);
-delay (500);
-digitalWrite (a,0);
-digitalWrite (b,0);
-digitalWrite (c,0);
-digitalWrite (d,0);
-digitalWrite (e,0);
-digitalWrite (f,0);
-digitalWrite (g,0);
-delay (500);
-digitalWrite (a,0);
-digitalWrite (b,0);
-digitalWrite (c,0);
-digitalWrite (d,0);
-digitalWrite (e,1);
-digitalWrite (f,0);
-digitalWrite (g,0);
-delay (500);
-}
+Client
 
-    #-----------------------------------------------
-    # Write an embedded C program for LCD 16X2 interfacing with Arduino Uno.
-    #include &lt;LiquidCrystal.h&gt;
-int rs = 12, en = 10, d4 =5, d5 = 4, d6 = 3, d7 = 2;
-LiquidCrystal lcd (rs, en, d4, d5, d6, d7);
-void setup() {
-  lcd.begin(16,2);// put your setup code here, to run once:
-}
-void loop() {
-  lcd.home();
-  lcd.println(&quot;Hello&quot;);
-  delay(1000);
-  lcd.println(20, DEC);
-  delay(1000);
-  lcd.setCursor(0,1);
-  lcd.print(20,HEX);
-  delay(1000);
-  lcd.setCursor(3,1);
-  lcd.print(20, OCT);
-  delay(1000);
-  lcd.setCursor(6,1);
+import socket
+msgFromClient = &quot;Hello UDP Server&quot;
+bytesToSend = str.encode(msgFromClient)
+serverAddressPort = (&quot;127.0.0.1&quot;, 20001)
+bufferSize = 1024
+# Create a UDP socket at client side
+UDPClientSocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
+# Send to server using created UDP socket
+UDPClientSocket.sendto(bytesToSend, serverAddressPort)
+msgFromServer = UDPClientSocket.recvfrom(bufferSize)
+msg = &quot;Message from Server {}&quot;.format(msgFromServer[0])
+print(msg)
 
-   lcd.print(20,BIN);
-   delay(1000);
-}
-    
-    #----------------------------------------------- 
+Server
 
-    # 4. Write an embedded C program for PWM
+import socket
+localIP = &quot;127.0.0.1&quot;
+localPort = 20001
+bufferSize = 1024
+msgFromServer = &quot;Hello UDP Client&quot;
+bytesToSend = str.encode(msgFromServer)
 
-    voidsetup ()
-{
-pinMode(9, OUTPUT);  
- }
-voidloop () {
-analogWrite (9,64);
-delay (1000);
-analogWrite (9,127);
-delay (1000);
-analogWrite (9,19);
-delay (1000);
-analogWrite (9,255);
-delay (1000);
-analogWrite (9,0);
-delay (1000);
-}
+# Create a datagram socket
+UDPServerSocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
+# Bind to address and ip
+UDPServerSocket.bind((localIP, localPort))
+print(&quot;UDP server up and listening&quot;)
+# Listen for incoming datagrams
+while(True):
+bytesAddressPair = UDPServerSocket.recvfrom(bufferSize)
+message = bytesAddressPair[0]
+address = bytesAddressPair[1]
+clientMsg = &quot;Message from Client:{}&quot;.format(message)
+clientIP = &quot;Client IP Address:{}&quot;.format(address)
+print(clientMsg)
+print(clientIP)
+# Sending a reply to client
+UDPServerSocket.sendto(bytesToSend, address)
 
-    #----------------------------------------------- 
-    # Write an embedded C program for Servo Motor interfacing with Arduino Uno
-    #include &lt;Servo.h&gt;
-Servo myservo;  // create servo object to control a servo
-// twelve servo objects can be created on most boards
-int pos = 0;    // variable to store the servo position
-void setup() {
-  myservo.attach(9);  // attaches the servo on pin 9 to the servo object
-}
-void loop() {
-  for (pos = 0; pos &lt;= 180; pos += 1) { // goes from 0 degrees to 180 degrees
-    // in steps of 1 degree
-    myservo.write(pos);              // tell servo to go to position in variable &#39;pos&#39;
-    delay(15);                       // waits 15ms for the servo to reach the position
-  }
-  for (pos = 180; pos &gt;= 0; pos -= 1) { // goes from 180 degrees to 0 degrees
-    myservo.write(pos);              // tell servo to go to position in variable &#39;pos&#39;
-    delay(15);                       // waits 15ms for the servo to reach the position
-  }
-}
-     #----------------------------------------------- 
-    # Write an embedded C program for Stepper Motor interfacing with Arduino Uno
-    #include &lt;Stepper.h&gt;
-const int stepsPerRevolution = 200;  // change this to fit the number of steps per revolution
-// for your motor
-// initialize the stepper library on pins 8 through 11:
-Stepper myStepper(stepsPerRevolution, 8, 9, 10, 11);
-void setup() {
-  // set the speed at 60 rpm:
-  myStepper.setSpeed(60);
-  // initialize the serial port:
-  Serial.begin(9600);
-}
-void loop() {
-  // step one revolution  in one direction:
-  Serial.println(&quot;clockwise&quot;);
-  myStepper.step(stepsPerRevolution);
-  delay(500);
-  // step one revolution in the other direction:
-  Serial.println(&quot;counterclockwise&quot;);
-  myStepper.step(-stepsPerRevolution);
-  delay(500);
-}
 
-         #----------------------------------------------- 
-    # Write an embedded C program for Ultrasonic Sensor interfacing with Arduino Uno
-    #include &quot;Ultrasonic.h&quot;
-/*
-   Pass as a parameter the trigger and echo pin, respectively,
-   or only the signal pin (for sensors 3 pins), like:
-   Ultrasonic ultrasonic(13);
-*/
-Ultrasonic ultrasonic(12, 13);
-int distance;
-void setup() {
-  Serial.begin(9600);
-}
-void loop() {
-  // Pass INC as a parameter to get the distance in inches
-  distance = ultrasonic.read(CM);
-  Serial.print(&quot;Distance in CM: &quot;);
-  Serial.println(distance);
-  distance = ultrasonic.read(INC);
-  Serial.print(&quot;Distance in Inches: &quot;);
-  Serial.println(distance);
-  delay(1000);
-}
 
-    #----------------------------------------------- 
-    # Write an embedded C program for Watchdog Timer
-    #include &lt;avr/wdt.h&gt;
-#define BTN_PIN 2
-void setup() {
-  Serial.begin(115200);
-  if (bitRead(MCUSR, WDRF)) {
-    Serial.println(&quot;System was reset due to watchdog timeout! bark!&quot;);
-    Serial.println();
-  }
-  Serial.println(&quot;You must press the button every 4 seconds (or less). Or else.&quot;);
-  wdt_enable(WDTO_4S);
-  pinMode(BTN_PIN, INPUT_PULLUP);
-}
-void loop() {
-  while (digitalRead(BTN_PIN) == HIGH);
-  Serial.print(&quot;Watchdog reset @ millis &quot;);
-  Serial.println(millis());
-  wdt_reset();
-  delay(100);
-}
-    
+#-------------------------------------------------------------------------------------------------
+
+AIM : Concurrent TCP/IP Date Time Server
+
+Server
+
+import socket
+import datetime
+
+s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.bind((&quot;127.0.0.1&quot;, 12345))
+s.listen(5)
+while 1:
+cs, add= s.accept()
+print(f&quot;server: connection from {add} has been established&quot;)
+val= &#39;&#39;
+while val!= &quot;exit&quot;:
+msg=cs.recv(1024)
+print(&quot;client:&quot; + msg.decode(&quot;utf-8&quot;))
+if msg.decode(&quot;utf-8&quot;)== &quot;time&quot;:
+val=str(datetime.datetime.now().time())
+cs.send(bytes(val, &quot;utf-8&quot;))
+elif msg.decode(&quot;utf-8&quot;)== &quot;date&quot;:
+val = str(datetime.datetime.now().date())
+#val=str(datetime.datetime.now().date())
+
+cs.send(bytes(val, &quot;utf-8&quot;))
+elif msg.decode(&quot;utf-8&quot;)== &quot;exit&quot;:
+break
+else:
+val=&quot;invalid request&quot;
+cs.send(bytes(val, &quot;utf-8&quot;))
+
+Client
+import socket
+
+s= socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((&quot;127.0.0.1&quot;, 12345))
+while True:
+my= input(&quot;client: msg&quot;)
+s.send(bytes(my, &quot;utf-8&quot;))
+if my==&quot;exit&quot;:
+break
+msg= s.recv(1024)
+print(&quot;server:&quot;, msg.decode(&quot;utf-8&quot;))
+
+#-------------------------------------------------------------------------------------------------
+
+AIM : Half Duplex
+
+Server
+import socket
+s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.bind((&quot;127.0.0.1&quot;, 12345)
+s.listen(5)
+while 1:
+cs,add= s.accept()
+print(f&quot;connection from {add} has been established&quot;)
+val= &quot;hi There&quot;
+while val=! &quot;exit&quot;:
+val=input(&quot;server:&quot;)
+cs.send(bytes(val, &quot;utf-8&quot;))
+msg=cs.recv(1024)
+print(&quot;client: &quot;+ msg.decode(&quot;utf-8&quot;))
+
+Client
+import socket
+s= socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((&quot;127.0.0.1&quot;, 12345))
+print(&quot;Sending connection request&quot;)
+print(&quot;Connection established&quot;)
+msg=&quot; &quot;
+while msg=! &quot;exit&quot;:
+msg=s.recv(1024)
+print(&quot;server:&quot;, msg.decode(&quot;utf-8&quot;))
+my=input(&quot;client:&quot;)
+s.send(bytes(my, &quot;utf-8&quot;))
+
+#-------------------------------------------------------------------------------------------------
+
+AIM : FULL DUPLEX
+
+Server Full Duplex
+
+import socket
+import threading
+import sys
+FLAG=False
+def recv_from_client(conn):
+global FLAG
+try:
+while True:
+if FLAG==True:
+break
+message= conn.recv(1024).decode()
+if message==&#39;quit&#39;:
+conn.send(&#39;quit&#39;.encode())
+conn.close()
+print(&#39;Connection Closed&#39;)
+FLAG=True
+break
+print(&#39;Client:&#39;+messgae)
+
+except:
+conn.close()
+def send_to_client(conn):
+global FLAG
+try:
+while True:
+if FLAG==True:
+break
+send_msg=input(&#39; &#39;)
+if send_msg==&#39;quit&#39;:
+conn.send(&#39;quit&#39;.encode())
+conn.close()
+
+print(&#39;Connection Closed&#39;)
+FLAG=True
+break
+conn.send(send_msg.encode())
+
+except:
+conn.close()
+
+def main():
+threads=[]
+global FLAG
+HOST=&#39;localhost&#39;
+serverPort=6500
+serverSocket=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+serverSocket.bind((HOST, serverPort))
+print(&quot;Socket binded.&quot;)
+serverSocket.listen(1)
+print(&quot;Listening. ......&quot;)
+connectionSocket,addr= serverSocket.accept()
+print(&#39;Connection Established with a client on&#39;,addr,&#39;\n&#39;)
+t_rcv= threading.Thread(target=recv_from_client,args=(connectionSocket,))
+t_send=threading.Thread(target=send_to_client, args=(connectionSocket,))
+threads.append(t_rcv)
+threads.append(t_send)
+t_rcv.start()
+t_send.start()
+t_rcv.join()
+t_send.join()
+print(&#39;EXITING&#39;)
+serverSocket.close()
+sys.exit()
+if __name__==&quot;__main__&quot;:
+main()
+
+Client Full Duplex
+
+import socket
+import threading
+import sys
+
+FLAG=False
+def send_to_server(clsock):
+global FLAG
+while True:
+if FLAG==True:
+break
+send_msg=input(&#39;&#39;)
+clsock.sendall(send_msg.encode())
+
+def recv_from_server(clsock):
+global FLAG
+while True:
+data=clsock.recv(1024).decode()
+if data==&#39;quit&#39;:
+print(&#39;Closing connection&#39;)
+FLAG=True
+break
+print(&#39;Server:&#39;+ data)
+
+def main():
+threads=[]
+HOST=&#39;localhost&#39;
+PORT=6500
+clientSocket=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+clientSocket.connect((HOST, PORT))
+print(&#39;Client is connected to the Server\n&#39;)
+t_send=threading.Thread(target=send_to_server,args=(clientSocket,))
+t_rcv=threading.Thread(target=recv_from_server,args=(clientSocket,))
+
+threads.append(t_send)
+threads.append(t_rcv)
+t_send.start()
+t_rcv.start()
+t_send.join()
+t_rcv.join()
+print(&#39;EXITING&#39;)
+sys.exit()
+if __name__==&quot;__main__&quot;:
+main()
+
+
+#-------------------------------------------------------------------------------------------------
+
+AIM : Remote Command Execution Using UDP
+
+Server
+import socket
+import os
+s= socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+s.bind((&quot;127.0.0.1&quot;, 6789))
+print(&quot;Connection created.. waiting for response\n&quot;)
+print(s.recvfrom(1024)[0].decode())
+while True:
+x=s.recvfrom(1024)
+if (x[0].decode()==&quot;stop&quot;):
+break
+ops=os.popen(x[0].decode())
+op=ops.read()
+print(op)
+s.sendto(op.encode(),x[1])
+
+Client
+import socket
+import os
+cl=socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+addr= (&quot;127.0.0.1&quot;, 6789)
+cl.sendto(&quot;Connection established &quot;.encode(), addr)
+while True:
+x= input(&quot;Enter the command:&quot;)
+cl.sendto(x.encode(),addr)
+y= cl.recvfrom(1024)
+print(&quot;Server&#39;s output:&quot;,y[0].decode())
+
+
+#-------------------------------------------------------------------------------------------------
+
+AIM : Implementation of File Transfer Protocol
+
+Server
+
+import socket
+s= socket.socket()
+host= socket.gethostname()
+port= 55004
+s.connect((&#39;127.0.0.1&#39;, port))
+print(&quot;Connected.&quot;)
+sentence= input(&quot;&gt;&gt;&quot;)
+s.send(sentecne.encode())
+filename=input(str(&quot;Enter incoming file name:&quot;))
+file=open(filename, &#39;a&#39;)
+file_data=s.recv(1024)
+file.write(&quot;\n&quot;)
+file.write(file_data.decode(&quot;utf-8&quot;))
+file.close()
+print(&quot;File received successfully.&quot;)
+
+Client
+
+import socket
+s=socket.socket()
+host=socket.gethostname()
+port=5004
+s.connect((host, port))
+print(&quot;Connected.&quot;)
+sentence=input(&quot;&gt;&gt;&quot;)
+s.send(sentence.encode())
+filename= input(str(&quot;Enter incoming file name:&quot;))
+file=open(filename, &#39;a&#39;)
+
+file_data=s.recv(1024)
+file.write(&quot;\n&quot;)
+file.write(file_data.decode(&quot;utf-8&quot;))
+file.close()
+print(&quot;File received successfully.&quot;)
+s.close()
+
+
+#-------------------------------------------------------------------------------------------------
+ 
+AIM : ARP Implementation Using UDP
+
+
+import os
+import getmac
+ip=&quot;&quot;
+while ip!= &quot;exit&quot;:
+ip= input(&quot;Enter IP address [or exit]:&quot;)
+if ip== &quot;exit&quot;:
+continue
+os.system(&quot;ping{}&quot;.format(ip))
+if msg==&quot;n&quot;:
+continue
+mac= getmac.get_mac_address(ip=ip)
+print(&quot;MAC address:{}&quot;.format(mac))
+print(&quot;Exiting&quot;)
+
+#-------------------------------------------------------------------------------------------------
+
+AIM : Study Of IPv6 Addressing And Subnetting
+
+Aim- To study IPv6 addressing and subnetting IPv6 Addressing Modes Addressing mode refers
+to the mechanism of hosting an address on the network. IPv6 offers several types of modes by
+which a single host can be addressed. More than one host can be addressed at once or the host at
+the closest distance can be addressed.
+Technical Objective: IPv6 addresses use 128 bits to represent an address which includes bits to
+be used for subnetting. The second half of the address (least significant 64 bits) is always used
+for hosts only. Therefore, there is no compromise if we subnet the network. Simulate the same.
+Given Requirements: IPv6 protocol has to be studied in detail and then simulated using routers
+and PC in Cisco packet tracer simulation software with the packet ICMPv6 to demonstrate
+subnet mask feature of IPv6 protocol.
+Unicast:
+In unicast mode of addressing, an IPv6 interface (host) is uniquely identified in a network
+segment. The IPv6 packet contains both source and destination IP addresses. A host interface is
+equipped with an IP address which is unique in that network segment. When a network switch or
+a router receives a unicast IP packet, destined to a single host, it sends out one of its outgoing
+interfaces which connects to that particular host.
+
+** UNICAST IMAGE **
+
+
+Multicast :
+The IPv6 multicast mode is the same as that of IPv4. The packet destined to multiple hosts is
+sent on a special multicast address. All the hosts interested in that multicast information, need to
+join that multicast group first. All the interfaces that joined the group receive the multicast packet
+and process it, while other hosts not interested in multicast packets ignore the multicast
+information.
+
+** MULTICAST IMAGE **
+
+
+Anycast :
+IPv6 has introduced a new type of addressing, which is called Anycast addressing. In this
+addressing mode, multiple interfaces (hosts) are assigned the same Anycast IP address. When a
+host wishes to communicate with a host equipped with an Anycast IP address, it sends a Unicast
+message. With the help of a complex routing mechanism, that Unicast message is delivered to
+the host closest to the Sender in terms of Routing cost.
+
+** ANYCAST **
+
+Address Structure:
+An IPv6 address is made of 128 bits divided into eight 16-bits blocks. Each block is then
+converted into 4- digit Hexadecimal numbers separated by colon symbols. For example, given
+below is a 128-bit IPv6 address represented in binary format and divided into eight 16- bits
+blocks:
+0010000000000001 0000000000000000 0011001000111000 1101111111100001
+0000000001100011 0000000000000000 0000000000000000 1111111011111011.
+Each block is then converted into Hexadecimal and separated by ‘:’
+symbol: 2001:0000:3238:DFE1:0063:0000:0000:FEFB
+IPv6 Subnetting:
+In IPv4, addresses were created in classes. Classful IPv4 addresses clearly define the bits used
+for network prefixes and the bits used for hosts on that network. To subnet in IPv4, we play with
+the default classful netmask which allows us to borrow host bits to be used as subnet bits. This
+results in multiple subnets but less hosts per subnet. That is, when we borrow host bits to create a
+subnet, it costs us in lesser bit to be used for host addresses. IPv6 addresses use 128 bits to
+represent an address which includes bits to be used for subnetting. The second half of the address
+(least significant 64 bits) is always used for hosts only. Therefore, there is no compromise if we
+subnet the network.
+
+** DIAGRAM
+ROUTING PREFIX (48 bits) | SUBNET ID (16bits) | INTERFACE ID (64 bits)
+**
+
+16 bits of subnet is equivalent to IPv4’s Class B Network. Using these subnet bits, an
+organization can have another 65 thousand of subnets which is by far, more than enough. Thus,
+routing prefix is /64 and host portion is 64 bits. We can further subnet the network beyond 16
+bits of Subnet ID, by borrowing host bits; but it is recommended that 64 bits should always be
+used for hosts addresses because auto-configuration requires 64 bits. IPv6 subnetting works on
+the same concept as Variable Length Subnet Masking in IPv4. /48 prefix can be allocated to an
+organization providing it the benefit of having up to /64 subnet prefixes, which is 65535
+sub networks, each having 264 hosts.
+
+Result- Study IPv6 addressing and subnetting IPv6 Addressing Modes Addressing
+mode refers to the mechanism of hosting an address on the network. IPv6 offers
+several types of modes by which a single host can be addressed. More than one host
+can be addressed at once or the host at the closest distance can be addressed.
+
+#-------------------------------------------------------------------------------------------------
+
+
+AIM : Implementation of NAT
+
+Aim: To study and perform Network Address Translation (NAT) using cisco packet tracer. 
+Procedure:
+Assign the following topology with respective IP addresses to pc, routers, servers and connection
+between them.
+
+** NAT diagram **
+
+Configure static NAT configuration
+Since static NAT use manual translation, we have to map each inside local IP address(which needs a
+translation) with inside global IP address. Following command is used to map the inside local IP
+address with inside global IP address.
+Router(config)#ip nat inside source static [inside local ip address] [inside global IP address]
+And use the following commands to define inside and outside network connection for your local and
+global
+IP addresses.
+Router(config-if)#ip nat inside
+Router(config-if)#ip nat outsideImplementation of VPN
+Configure the IP routing
+IP routing is the process which allows router to route the packet between different networks.
+IP routing on router():
+
+** REF PDF very complicated IMAGES ** 
+
+#-------------------------------------------------------------------------------------------------
+
+AIM : Implementation of VPN
+
+
+Aim- To study about Virtual Private Network.
+Technical Objective:
+can be spoofed by using VPN service provided by different organizations.
+Steps to Automate VPN using Python:
+Step 1: Open your terminal (Ctrl+Alt+T) and create a file using gedit by typing the following command
+on the terminal.
+gedit gfg.py
+Step 2: import the modules of python into the opened file.
+Step 3: Create a list of Free VPN server codes provided by Windscribe (VPN).
+Step 4: Start a try block connect with Windscribe using os module
+Step 5: Start a catch block and then:
+Disconnect the VPN, it will run if it gets any error.
+Display a disconnection message here.
+
+Code
+# import required modules
+import os
+from time import sleep
+import random
+# list of VPN server codes
+codeList = ["TR", "US-C", "US", "US-W", "CA", "CA-W",
+"FR", "DE", "NL", "NO", "RO", "CH", "GB", "HK"]
+try:
+# connect to VPN
+os.system("windscribe connect")
+while True:
+# assigning a random VPN server code
+choiceCode = random.choice(codeList)
+
+# changing IP after a particular time period
+sleep(random.randrange(120, 300))
+# connecting to a different VPN server
+print("!!! Changing the IP Address........")
+os.system("windscribe connect " + choiceCode)
+except:
+# disconnect VPN
+os.system("windscribe disconnect")
+print("sorry, some error has occurred..!!")
+
+Result: Implementation of VPN is executed successfully.
+
+
+#-------------------------------------------------------------------------------------------------
+
+AIM : Communication Using HDLC/PPP
+
+
+Aim- To study about HDLC (High Level Data Link Control) and PPP (point to point): protocols
+in cisco packet tracer.
+Technical Objective: The encapsulation protocols of HDLC and PPP are two different ways in
+which this is implemented within the connections, so after studying and understanding the
+differences between them, demonstrate the differences between them using Cisco packet tracer.
+Given Requirements: HDLC and PPP are two different types of communication methods, so
+give a detailed description and analysis of both and show there difference in cisco packet tracer
+simulation software.
+HDLC (High Level Data Link Control):
+HDLC is a data link protocol used on synchronous serial data links. Because the standardized
+HDLC cannot support multiple protocols on a single link (lack of a mechanism to indicate which
+protocol is carried), Cisco developed a proprietary version of HDLC, called cHDLC, with a
+proprietary field acting as a protocol field. This field makes it possible for a single serial link to
+accommodate multiple network-layer protocols.
+
+HDLC IN CISCO:
+By default, in the cisco packet tracer it is already HDLC.
+
+not we can use the CLI commands to enable it the commands are
+
+Router-B(config)#interface serial 0/0/0
+
+58
+
+Router-B(config-if)#encapsulation hdlc
+Router-B(config-if)#ip address 192.168.10.5 255.255.255.252
+Router-B(config-if)#no shutdown
+
+
+PPP (point to point):
+The username of one router should be the hostname of other and if there are two routers this
+happens.
+And the passwords should be same for both routers in case if we take any two routers.
+And we are using chap in ppp to test this ppp The commands are:-
+r1(config)# int se0/3/0
+R1(config t)# encapsulation ppp
+R1(config t)#ppp authentication chap.
+
+
+** IMAGES 
+CISCO Packet Tracer Simulation CLI
+
+CISCO Packet Tracer Simulation IPV6 Subnet Mask
+**
+
+#-------------------------------------------------------------------------------------------------
 </body>
 
 </html>
