@@ -1,25 +1,274 @@
 <html lang="en">
 
 <body>
-    # echo-server.py
+    # Write an embedded C program to interface LED and push button with Arduino Uno
+    const int buttonPin = 4;  // Pin connected to pushbutton
+const int ledPin = 12;  // Pin connected to LED  
+int buttonState; // Give pushbutton a value
+void setup()
+{
+pinMode(ledPin, OUTPUT);  // Set LED pin as output
+pinMode(buttonPin, INPUT); // Set pushbutton pin as input
+ }
+void loop() { buttonState = digitalRead(buttonPin); // Read input from pin 4
+if(buttonState == LOW) { // If pushbutton is pressed, set as low
+ digitalWrite(ledPin, HIGH); // Turn on LED
+ 
 
-    import socket
+delay(500);
+ digitalWrite(ledPin, LOW);
+ delay(500);
+}
+else
+{
+  digitalWrite(ledPin, LOW); // Otherwise, turn off LED
+   }
+   }
 
-    HOST = "127.0.0.1" # Standard loopback interface address (localhost)
-    PORT = 65432 # Port to listen on (non-privileged ports are > 1023)
 
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    s.bind((HOST, PORT))
-    s.listen()
-    conn, addr = s.accept()
-    with conn:
-    print(f"Connected by {addr}")
-    while True:
-    data = conn.recv(1024)
-    if not data:
-    break
-    conn.sendall(data)
+    #-----------------------------------------------------
+     # Write an embedded C program for Seven Segment Display interfacing with Arduino
 
+    int a=13;
+int b=12;
+int c=11;
+int d=10;
+int e=9;
+int f=8;
+int g=7;
+void setup() {
+  // put your setup code here, to run once:
+pinMode (a, OUTPUT);
+pinMode (b, OUTPUT);
+pinMode (c, OUTPUT);
+pinMode (d, OUTPUT);
+pinMode (e, OUTPUT);
+pinMode (f, OUTPUT);
+pinMode (g, OUTPUT);
+}
+void loop() {
+
+  // put your main code here, to run repeatedly:
+digitalWrite (a,0);
+digitalWrite (b,0);
+digitalWrite (c,0);
+digitalWrite (d,0);
+digitalWrite (e,0);
+digitalWrite (f,0);
+digitalWrite (g,1);
+delay (500);
+digitalWrite (a,1);
+digitalWrite (b,0);
+digitalWrite (c,0);
+digitalWrite (d,1);
+digitalWrite (e,1);
+digitalWrite (f,1);
+digitalWrite (g,1);
+delay (500);
+digitalWrite (a,0);
+digitalWrite (b,0);
+digitalWrite (c,1);
+digitalWrite (d,0);
+digitalWrite (e,0);
+digitalWrite (f,1);
+digitalWrite (g,0);
+delay (500);
+digitalWrite (a,0);
+digitalWrite (b,0);
+digitalWrite (c,0);
+digitalWrite (d,0);
+digitalWrite (e,1);
+digitalWrite (f,1);
+digitalWrite (g,0);
+delay (500);
+digitalWrite (a,1);
+digitalWrite (b,0);
+digitalWrite (c,0);
+digitalWrite (d,1);
+digitalWrite (e,1);
+digitalWrite (f,0);
+digitalWrite (g,0);
+delay (500);
+
+digitalWrite (a,0);
+digitalWrite (b,1);
+digitalWrite (c,0);
+digitalWrite (d,0);
+digitalWrite (e,1);
+digitalWrite (f,0);
+digitalWrite (g,0);
+delay (500);
+digitalWrite (a,0);
+digitalWrite (b,1);
+digitalWrite (c,0);
+digitalWrite (d,0);
+digitalWrite (e,0);
+digitalWrite (f,0);
+digitalWrite (g,0);
+delay (500);
+digitalWrite (a,0);
+digitalWrite (b,0);
+digitalWrite (c,0);
+digitalWrite (d,1);
+digitalWrite (e,1);
+digitalWrite (f,1);
+digitalWrite (g,1);
+delay (500);
+digitalWrite (a,0);
+digitalWrite (b,0);
+digitalWrite (c,0);
+digitalWrite (d,0);
+digitalWrite (e,0);
+digitalWrite (f,0);
+digitalWrite (g,0);
+delay (500);
+digitalWrite (a,0);
+digitalWrite (b,0);
+digitalWrite (c,0);
+digitalWrite (d,0);
+digitalWrite (e,1);
+digitalWrite (f,0);
+digitalWrite (g,0);
+delay (500);
+}
+
+    #-----------------------------------------------
+    # Write an embedded C program for LCD 16X2 interfacing with Arduino Uno.
+    #include &lt;LiquidCrystal.h&gt;
+int rs = 12, en = 10, d4 =5, d5 = 4, d6 = 3, d7 = 2;
+LiquidCrystal lcd (rs, en, d4, d5, d6, d7);
+void setup() {
+  lcd.begin(16,2);// put your setup code here, to run once:
+}
+void loop() {
+  lcd.home();
+  lcd.println(&quot;Hello&quot;);
+  delay(1000);
+  lcd.println(20, DEC);
+  delay(1000);
+  lcd.setCursor(0,1);
+  lcd.print(20,HEX);
+  delay(1000);
+  lcd.setCursor(3,1);
+  lcd.print(20, OCT);
+  delay(1000);
+  lcd.setCursor(6,1);
+
+   lcd.print(20,BIN);
+   delay(1000);
+}
+    
+    #----------------------------------------------- 
+
+    # 4. Write an embedded C program for PWM
+
+    voidsetup ()
+{
+pinMode(9, OUTPUT);  
+ }
+voidloop () {
+analogWrite (9,64);
+delay (1000);
+analogWrite (9,127);
+delay (1000);
+analogWrite (9,19);
+delay (1000);
+analogWrite (9,255);
+delay (1000);
+analogWrite (9,0);
+delay (1000);
+}
+
+    #----------------------------------------------- 
+    # Write an embedded C program for Servo Motor interfacing with Arduino Uno
+    #include &lt;Servo.h&gt;
+Servo myservo;  // create servo object to control a servo
+// twelve servo objects can be created on most boards
+int pos = 0;    // variable to store the servo position
+void setup() {
+  myservo.attach(9);  // attaches the servo on pin 9 to the servo object
+}
+void loop() {
+  for (pos = 0; pos &lt;= 180; pos += 1) { // goes from 0 degrees to 180 degrees
+    // in steps of 1 degree
+    myservo.write(pos);              // tell servo to go to position in variable &#39;pos&#39;
+    delay(15);                       // waits 15ms for the servo to reach the position
+  }
+  for (pos = 180; pos &gt;= 0; pos -= 1) { // goes from 180 degrees to 0 degrees
+    myservo.write(pos);              // tell servo to go to position in variable &#39;pos&#39;
+    delay(15);                       // waits 15ms for the servo to reach the position
+  }
+}
+     #----------------------------------------------- 
+    # Write an embedded C program for Stepper Motor interfacing with Arduino Uno
+    #include &lt;Stepper.h&gt;
+const int stepsPerRevolution = 200;  // change this to fit the number of steps per revolution
+// for your motor
+// initialize the stepper library on pins 8 through 11:
+Stepper myStepper(stepsPerRevolution, 8, 9, 10, 11);
+void setup() {
+  // set the speed at 60 rpm:
+  myStepper.setSpeed(60);
+  // initialize the serial port:
+  Serial.begin(9600);
+}
+void loop() {
+  // step one revolution  in one direction:
+  Serial.println(&quot;clockwise&quot;);
+  myStepper.step(stepsPerRevolution);
+  delay(500);
+  // step one revolution in the other direction:
+  Serial.println(&quot;counterclockwise&quot;);
+  myStepper.step(-stepsPerRevolution);
+  delay(500);
+}
+
+         #----------------------------------------------- 
+    # Write an embedded C program for Ultrasonic Sensor interfacing with Arduino Uno
+    #include &quot;Ultrasonic.h&quot;
+/*
+   Pass as a parameter the trigger and echo pin, respectively,
+   or only the signal pin (for sensors 3 pins), like:
+   Ultrasonic ultrasonic(13);
+*/
+Ultrasonic ultrasonic(12, 13);
+int distance;
+void setup() {
+  Serial.begin(9600);
+}
+void loop() {
+  // Pass INC as a parameter to get the distance in inches
+  distance = ultrasonic.read(CM);
+  Serial.print(&quot;Distance in CM: &quot;);
+  Serial.println(distance);
+  distance = ultrasonic.read(INC);
+  Serial.print(&quot;Distance in Inches: &quot;);
+  Serial.println(distance);
+  delay(1000);
+}
+
+    #----------------------------------------------- 
+    # Write an embedded C program for Watchdog Timer
+    #include &lt;avr/wdt.h&gt;
+#define BTN_PIN 2
+void setup() {
+  Serial.begin(115200);
+  if (bitRead(MCUSR, WDRF)) {
+    Serial.println(&quot;System was reset due to watchdog timeout! bark!&quot;);
+    Serial.println();
+  }
+  Serial.println(&quot;You must press the button every 4 seconds (or less). Or else.&quot;);
+  wdt_enable(WDTO_4S);
+  pinMode(BTN_PIN, INPUT_PULLUP);
+}
+void loop() {
+  while (digitalRead(BTN_PIN) == HIGH);
+  Serial.print(&quot;Watchdog reset @ millis &quot;);
+  Serial.println(millis());
+  wdt_reset();
+  delay(100);
+}
+    
 </body>
 
 </html>
