@@ -66,15 +66,15 @@ Disable socket only: closesocket ()
 Three Data Types
 Struct sockaddr
 {
-Unsigned short sa_family; // address family, generally af_inet
-Char sa_data [14]; // 14-byte Protocol address
+    Unsigned short sa_family; // address family, generally af_inet
+    Char sa_data [14]; // 14-byte Protocol address
 }
 Struct sockaddr_in
 {
-Short int sin_family; // address family
-Unsigned short int sin_port; // port number
-Struct in_addr; // ip address
-Unsigned char sin_zero [8]; // fill
+    Short int sin_family; // address family
+    Unsigned short int sin_port; // port number
+    Struct in_addr; // ip address
+    Unsigned char sin_zero [8]; // fill
 }
 Four common functions
 1 socket ()
@@ -277,230 +277,252 @@ while(True):
 
 AIM : Concurrent TCP/IP Date Time Server
 
-Server
+# Server
 
 import socket
 import datetime
 
-s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind(("127.0.0.1", 12345))
 s.listen(5)
+
 while 1:
-cs, add= s.accept()
-print(f"server: connection from {add} has been established")
-val= '
-while val!= "exit":
-msg=cs.recv(1024)
-print("client:" + msg.decode("utf-8"))
-if msg.decode("utf-8")== "time":
-val=str(datetime.datetime.now().time())
-cs.send(bytes(val, "utf-8"))
-elif msg.decode("utf-8")== "date":
-val = str(datetime.datetime.now().date())
-#val=str(datetime.datetime.now().date())
+    cs, add = s.accept()
+    print(f"server: connection from {add} has been established")
+    val = ''
+    
+    while val != "exit":
+        msg = cs.recv(1024)
+        print("client:" + msg.decode("utf-8"))
+        
+        if msg.decode("utf-8") == "time":
+            val = str(datetime.datetime.now().time())
+            cs.send(bytes(val, "utf-8"))
+        elif msg.decode("utf-8") == "date":
+            val = str(datetime.datetime.now().date())
+            cs.send(bytes(val, "utf-8"))
+        elif msg.decode("utf-8") == "exit":
+            break
+        else:
+            val = "invalid request"
+            cs.send(bytes(val, "utf-8"))
 
-cs.send(bytes(val, "utf-8"))
-elif msg.decode("utf-8")== "exit":
-break
-else:
-val="invalid request"
-cs.send(bytes(val, "utf-8"))
+# Client
 
-Client
 import socket
 
-s= socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect(("127.0.0.1", 12345))
+
 while True:
-my= input("client: msg")
-s.send(bytes(my, "utf-8"))
-if my=="exit":
-break
-msg= s.recv(1024)
-print("server:", msg.decode("utf-8"))
+    my = input("client: msg")
+    s.send(bytes(my, "utf-8"))
+    
+    if my == "exit":
+        break
+    
+    msg = s.recv(1024)
+    print("server:", msg.decode("utf-8"))
+
 
 #-------------------------------------------------------------------------------------------------
 
+
 AIM : Half Duplex
-
-Server
+# Server
 import socket
-s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind(("127.0.0.1", 12345)
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.bind(("127.0.0.1", 12345))
 s.listen(5)
-while 1:
-cs,add= s.accept()
-print(f"connection from {add} has been established")
-val= "hi There"
-while val=! "exit":
-val=input("server:")
-cs.send(bytes(val, "utf-8"))
-msg=cs.recv(1024)
-print("client: "+ msg.decode("utf-8"))
 
-Client
+while 1:
+    cs, add = s.accept()
+    print(f"connection from {add} has been established")
+    val = "hi There"
+    
+    while val != "exit":
+        val = input("server:")
+        cs.send(bytes(val, "utf-8"))
+        msg = cs.recv(1024)
+        print("client: " + msg.decode("utf-8"))
+
+# Client
 import socket
-s= socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect(("127.0.0.1", 12345))
 print("Sending connection request")
 print("Connection established")
-msg=" "
-while msg=! "exit":
-msg=s.recv(1024)
-print("server:", msg.decode("utf-8"))
-my=input("client:")
-s.send(bytes(my, "utf-8"))
+
+msg = " "
+while msg != "exit":
+    msg = s.recv(1024)
+    print("server:", msg.decode("utf-8"))
+    my = input("client:")
+    s.send(bytes(my, "utf-8"))
+
 
 #-------------------------------------------------------------------------------------------------
 
 AIM : FULL DUPLEX
 
-Server Full Duplex
-
+-X- SERVER
 import socket
 import threading
 import sys
-FLAG=False
+
+FLAG = False
+
 def recv_from_client(conn):
-global FLAG
-try:
-while True:
-if FLAG==True:
-break
-message= conn.recv(1024).decode()
-if message=='quit':
-conn.send('quit'.encode())
-conn.close()
-print('Connection Closed')
-FLAG=True
-break
-print('Client:'+messgae)
+    global FLAG
+    try:
+        while True:
+            if FLAG:
+                break
+            message = conn.recv(1024).decode()
+            if message == 'quit':
+                conn.send('quit'.encode())
+                conn.close()
+                print('Connection Closed')
+                FLAG = True
+                break
+            print('Client: ' + message)
 
-except:
-conn.close()
+    except:
+        conn.close()
+
 def send_to_client(conn):
-global FLAG
-try:
-while True:
-if FLAG==True:
-break
-send_msg=input(' ')
-if send_msg=='quit':
-conn.send('quit'.encode())
-conn.close()
+    global FLAG
+    try:
+        while True:
+            if FLAG:
+                break
+            send_msg = input(' ')
+            if send_msg == 'quit':
+                conn.send('quit'.encode())
+                conn.close()
+                print('Connection Closed')
+                FLAG = True
+                break
+            conn.send(send_msg.encode())
 
-print('Connection Closed')
-FLAG=True
-break
-conn.send(send_msg.encode())
-
-except:
-conn.close()
+    except:
+        conn.close()
 
 def main():
-threads=[]
-global FLAG
-HOST='localhost'
-serverPort=6500
-serverSocket=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-serverSocket.bind((HOST, serverPort))
-print("Socket binded.")
-serverSocket.listen(1)
-print("Listening. ......")
-connectionSocket,addr= serverSocket.accept()
-print('Connection Established with a client on',addr,'\n')
-t_rcv= threading.Thread(target=recv_from_client,args=(connectionSocket,))
-t_send=threading.Thread(target=send_to_client, args=(connectionSocket,))
-threads.append(t_rcv)
-threads.append(t_send)
-t_rcv.start()
-t_send.start()
-t_rcv.join()
-t_send.join()
-print('EXITING')
-serverSocket.close()
-sys.exit()
-if __name__=="__main__":
-main()
+    threads = []
+    global FLAG
+    HOST = 'localhost'
+    serverPort = 6500
+    serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    serverSocket.bind((HOST, serverPort))
+    print("Socket binded.")
+    serverSocket.listen(1)
+    print("Listening......")
+    connectionSocket, addr = serverSocket.accept()
+    print('Connection Established with a client on', addr, '\n')
+    t_rcv = threading.Thread(target=recv_from_client, args=(connectionSocket,))
+    t_send = threading.Thread(target=send_to_client, args=(connectionSocket,))
+    threads.append(t_rcv)
+    threads.append(t_send)
+    t_rcv.start()
+    t_send.start()
+    t_rcv.join()
+    t_send.join()
+    print('EXITING')
+    serverSocket.close()
+    sys.exit()
 
-Client Full Duplex
+if __name__ == "__main__":
+    main()
 
+
+-X- Client 
 import socket
 import threading
 import sys
 
-FLAG=False
+FLAG = False
+
 def send_to_server(clsock):
-global FLAG
-while True:
-if FLAG==True:
-break
-send_msg=input(')
-clsock.sendall(send_msg.encode())
+    global FLAG
+    while True:
+        if FLAG:
+            break
+        send_msg = input(' ')
+        clsock.sendall(send_msg.encode())
 
 def recv_from_server(clsock):
-global FLAG
-while True:
-data=clsock.recv(1024).decode()
-if data=='quit':
-print('Closing connection')
-FLAG=True
-break
-print('Server:'+ data)
+    global FLAG
+    while True:
+        data = clsock.recv(1024).decode()
+        if data == 'quit':
+            print('Closing connection')
+            FLAG = True
+            break
+        print('Server: ' + data)
 
 def main():
-threads=[]
-HOST='localhost'
-PORT=6500
-clientSocket=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-clientSocket.connect((HOST, PORT))
-print('Client is connected to the Server\n')
-t_send=threading.Thread(target=send_to_server,args=(clientSocket,))
-t_rcv=threading.Thread(target=recv_from_server,args=(clientSocket,))
+    threads = []
+    HOST = 'localhost'
+    PORT = 6500
+    clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    clientSocket.connect((HOST, PORT))
+    print('Client is connected to the Server\n')
+    t_send = threading.Thread(target=send_to_server, args=(clientSocket,))
+    t_rcv = threading.Thread(target=recv_from_server, args=(clientSocket,))
 
-threads.append(t_send)
-threads.append(t_rcv)
-t_send.start()
-t_rcv.start()
-t_send.join()
-t_rcv.join()
-print('EXITING')
-sys.exit()
-if __name__=="__main__":
-main()
+    threads.append(t_send)
+    threads.append(t_rcv)
+    t_send.start()
+    t_rcv.start()
+    t_send.join()
+    t_rcv.join()
+    print('EXITING')
+    sys.exit()
+
+if __name__ == "__main__":
+    main()
 
 
 #-------------------------------------------------------------------------------------------------
 
 AIM : Remote Command Execution Using UDP
 
-Server
+-X- Server
 import socket
 import os
-s= socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s.bind(("127.0.0.1", 6789))
 print("Connection created.. waiting for response\n")
 print(s.recvfrom(1024)[0].decode())
-while True:
-x=s.recvfrom(1024)
-if (x[0].decode()=="stop"):
-break
-ops=os.popen(x[0].decode())
-op=ops.read()
-print(op)
-s.sendto(op.encode(),x[1])
 
-Client
+while True:
+    x = s.recvfrom(1024)
+    if x[0].decode() == "stop":
+        break
+    
+    ops = os.popen(x[0].decode())
+    op = ops.read()
+    print(op)
+    s.sendto(op.encode(), x[1])
+
+-X- Client
 import socket
 import os
-cl=socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-addr= ("127.0.0.1", 6789)
+
+cl = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+addr = ("127.0.0.1", 6789)
 cl.sendto("Connection established ".encode(), addr)
+
 while True:
-x= input("Enter the command:")
-cl.sendto(x.encode(),addr)
-y= cl.recvfrom(1024)
-print("Server's output:",y[0].decode())
+    x = input("Enter the command:")
+    cl.sendto(x.encode(), addr)
+    y = cl.recvfrom(1024)
+    print("Server's output:", y[0].decode())
+
 
 
 #-------------------------------------------------------------------------------------------------
@@ -553,17 +575,21 @@ AIM : ARP Implementation Using UDP
 
 import os
 import getmac
-ip="
-while ip!= "exit":
-ip= input("Enter IP address [or exit]:")
-if ip== "exit":
-continue
-os.system("ping{}".format(ip))
-if msg=="n":
-continue
-mac= getmac.get_mac_address(ip=ip)
-print("MAC address:{}".format(mac))
+
+ip = ""
+while ip != "exit":
+    ip = input("Enter IP address [or exit]: ")
+    if ip == "exit":
+        continue
+    os.system("ping {}".format(ip))
+    msg = input("Continue? (y/n): ")
+    if msg == "n":
+        continue
+    mac = getmac.get_mac_address(ip=ip)
+    print("MAC address: {}".format(mac))
+
 print("Exiting")
+
 
 #-------------------------------------------------------------------------------------------------
 
@@ -697,24 +723,30 @@ Code
 import os
 from time import sleep
 import random
+
 # list of VPN server codes
-codeList = ["TR", "US-C", "US", "US-W", "CA", "CA-W",
-"FR", "DE", "NL", "NO", "RO", "CH", "GB", "HK"]
+codeList = ["TR", "US-C", "US", "US-W", "CA", "CA-W", "FR", "DE", "NL", "NO", "RO", "CH", "GB", "HK"]
+
 try:
-# connect to VPN
-os.system("windscribe connect")
-while True:
-# assigning a random VPN server code
-choiceCode = random.choice(codeList)
-# changing IP after a particular time period
-sleep(random.randrange(120, 300))
-# connecting to a different VPN server
-print("!!! Changing the IP Address........")
-os.system("windscribe connect " + choiceCode)
-except:
-# disconnect VPN
-os.system("windscribe disconnect")
-print("sorry, some error has occurred..!!")
+    # connect to VPN
+    os.system("windscribe connect")
+    
+    while True:
+        # assigning a random VPN server code
+        choiceCode = random.choice(codeList)
+        
+        # changing IP after a particular time period
+        sleep(random.randrange(120, 300))
+        
+        # connecting to a different VPN server
+        print("!!! Changing the IP Address........")
+        os.system("windscribe connect " + choiceCode)
+
+except Exception as e:
+    # disconnect VPN
+    os.system("windscribe disconnect")
+    print(f"Sorry, some error has occurred: {e}")
+
 
 Result: Implementation of VPN is executed successfully.
 
